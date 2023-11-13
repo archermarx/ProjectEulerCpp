@@ -4,4 +4,5 @@ project(
     default_options: ['cpp_std=c++20']
 )
 
-executable('problem44', 'src/problem44.cpp')
+executable('problem044', 'src/problem044.cpp')
+executable('problem045', 'src/problem045.cpp')
