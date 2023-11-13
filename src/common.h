@@ -37,3 +37,33 @@ template <typename T>
 T hexagonal(int n) {
     return n * (2*n - 1);
 }
+
+std::vector<bool> prime_sieve(int n) {
+    std::vector<bool> sieve(n, true);
+    int max_i = ceil(std::sqrt(n));
+    
+    for (int i = 2; i < max_i; i++) {
+        if (sieve[i]) {
+            for (int j = i*i; j < n; j +=i) {
+                sieve[j] = false;
+            }
+        }
+    }
+    return sieve;
+}
+
+TEST_CASE("Primes") {
+    auto primes = prime_sieve(100);
+    CHECK(primes[2]);
+    CHECK(primes[3]);
+    CHECK(!primes[4]);
+    CHECK(primes[5]);
+    CHECK(!primes[6]);
+    CHECK(primes[7]);
+    CHECK(!primes[8]);
+    CHECK(!primes[9]);
+    CHECK(!primes[10]);
+    CHECK(primes[11]);
+    CHECK(!primes[12]);
+    CHECK(primes[13]);
+}

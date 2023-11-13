@@ -21,11 +21,37 @@ int main(int argc, char** argv) {
     // propagate the result of the tests
         return res;
 
-        
     auto start = high_resolution_clock::now();
     
     // CODE GOES HERE
-    int answer = 0;
+    int N = 10'000;
+    auto primes = prime_sieve(N);
+
+    int answer = -1;
+
+    for (int i = 3; i < N; i += 2) {
+        if (primes[i]) {
+            continue;
+        }
+        auto j = 1;
+        auto none_found = true;
+        int p = i - 2 * j * j;
+        while (p > 0) {
+            if (primes[p]) {
+                none_found = false;
+                //std::cout<< i << " = " << p << " + 2 * " << j << "^2" << std::endl;
+                break;
+            }
+            j += 1;
+            p = i - 2 * j * j;
+        }
+        if (none_found) {
+            answer = i;
+            break;
+        }
+    }
+
+    std::cout<< "Answer: " << answer << std::endl;
 
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<std::chrono::milliseconds>(stop - start);
