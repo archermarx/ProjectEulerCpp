@@ -25,19 +25,17 @@ int main(int argc, char** argv) {
     
     // CODE GOES HERE
     int N = 10'000;
-    auto primes = prime_sieve(N);
-
     int answer = -1;
-
+       
     for (int i = 3; i < N; i += 2) {
-        if (primes[i]) {
+        if (is_prime(i)) {
             continue;
         }
         auto j = 1;
         auto none_found = true;
-        int p = i - 2 * j * j;
+        int p = i - 2*j*j;
         while (p > 0) {
-            if (primes[p]) {
+            if (is_prime(p)) {
                 none_found = false;
                 break;
             }
@@ -51,7 +49,7 @@ int main(int argc, char** argv) {
     }
 
     std::cout<< "Answer: " << answer << std::endl;
-
+    
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<std::chrono::microseconds>(stop - start);
     std::cout << "Took " << duration.count() << " us" << std::endl;
