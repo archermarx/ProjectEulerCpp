@@ -93,9 +93,74 @@ std::vector<int> primes(int n) {
     return _primes;
 }
 
-std::vector<int> prime_factors(int n) {
+std::vector<int> prime_factors(const int n) {
     std::vector<int> factors{};
+    int m = n;
+    if (m % 2 == 0) {
+        factors.push_back(2);
+        while (m % 2 == 0) {
+            m /= 2;
+        }
+    }
+    if (m % 3 == 0) {
+        factors.push_back(3);
+        while (m % 3 == 0) {
+            m /= 3;
+        }
+    }
+    int f = 5;
+    while (f * f <= m) {
+        if (m % f == 0) {
+            factors.push_back(f);
+            while (m % f == 0) {
+                m /= f;
+            }
+        } else {
+            f += 2;
+        }
+    } 
+
+    if (n != 1) {
+        factors.push_back(f);
+    }
+
     return factors;
+}
+
+template <int M>
+inline bool trial_divide(int &m) {
+    bool ans = false;
+    if (m % M == 0) {
+        ans = true;
+        while (m % M == 0) {
+            m /= M;
+        }
+    }
+    return ans;
+}
+
+int num_prime_factors(const int n) {
+    int N = 0;
+    int m = n;
+    N += trial_divide<2>(m);
+    N += trial_divide<3>(m);
+    int f = 5;
+    while (f * f <= m) {
+        if (m % f == 0) {
+            N += 1;
+            while (m % f == 0) {
+                m /= f;
+            }
+        } else {
+            f += 2;
+        }
+    } 
+
+    if (n != 1) {
+        N += 1;
+    }
+
+    return N;
 }
 
 TEST_CASE("Primes") {
@@ -129,11 +194,14 @@ TEST_CASE("Primes") {
     }
 }
 
-// TEST_CASE("Prime factors") {
-//     CHECK(prime_factors(14).size() == 2);
-//     CHECK(prime_factors(15).size() == 2);
-//     CHECK(prime_factors(644).size() == 3);
-//     CHECK(prime_factors(645).size() == 3);
-//     CHECK(prime_factors(646).size() == 3);
-// }
+TEST_CASE("Prime factors") {
+    CHECK(prime_factors(14).size() == 2);
+    CHECK(prime_factors(15).size() == 2);
+    CHECK(prime_factors(644).size() == 3);
+    CHECK(prime_factors(645).size() == 3);
+    CHECK(prime_factors(646).size() == 3);
+    for (int i = 2; i < 1000; i++) {
+        CHECK(prime_factors(i).size() == num_prime_factors(i));
+    }
+}
 

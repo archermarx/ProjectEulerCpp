@@ -24,9 +24,27 @@ int main(int argc, char** argv) {
         
     auto start = high_resolution_clock::now();
     
-    auto factorize = prime_factors(646);
+    int answer = -1;
+    int N = 1'000'000;
+    int RUN_SIZE = 4;
+    for (int i = 2; i < N; i++) {
+        bool failed = false;
+        auto m = num_prime_factors(i); 
+        if (m == RUN_SIZE) {
+            for (int j = 1; j < RUN_SIZE; j++) {
+                if (num_prime_factors(i+j) != RUN_SIZE){
+                    failed = true;
+                    break;
+                }
+            }
+            if (!failed) {
+                answer = i;
+                break;
+            }
+        }
+    }
 
-    // CODE GOES HERE
+    std::cout << "Answer: " << answer << std::endl;
 
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<std::chrono::microseconds>(stop - start);
