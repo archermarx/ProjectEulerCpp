@@ -39,7 +39,6 @@ int main(int argc, char** argv) {
         while (p > 0) {
             if (primes[p]) {
                 none_found = false;
-                //std::cout<< i << " = " << p << " + 2 * " << j << "^2" << std::endl;
                 break;
             }
             j += 1;
@@ -54,8 +53,8 @@ int main(int argc, char** argv) {
     std::cout<< "Answer: " << answer << std::endl;
 
     auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<std::chrono::milliseconds>(stop - start);
-    std::cout << "Took " << duration.count() << " ms" << std::endl;
+    auto duration = duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Took " << duration.count() << " us" << std::endl;
 
     return 0;
 }
