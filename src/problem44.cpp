@@ -152,21 +152,27 @@ int main(int argc, char** argv) {
     // propagate the result of the tests
         return res;
 
-    const int MAX_N = 5'000;
+    const int MAX_N = 10'000;
     
     auto start = std::chrono::high_resolution_clock::now();
 
     int smallest_difference = pentagonal2(MAX_N);
     int best_k = 0;
     int best_j = 0;
+    int min_diff = MAX_N;
+
+    std::vector<int> pentagonals(MAX_N);
+    pentagonals[0] = 1;
 
     // brute force option
     for (int k = 2; k <= MAX_N; k++) {
         int Pk = pentagonal2(k);
+        pentagonals[k - 1] = Pk;
         for (int j = k - 1; j > 0; j--) {
-            int Pj = pentagonal2(j);
+            int Pj = pentagonals[j-1];
             int D = Pk - Pj;
             if (D > smallest_difference) {
+                min_diff = std::min(min_diff, k - j);
                 break;
             }
             if (is_pentagonal2(D)) {
@@ -177,6 +183,9 @@ int main(int argc, char** argv) {
                     best_j = j;
                 }
             }
+        }
+        if (min_diff == 1) {
+            break;
         }
     }
 
