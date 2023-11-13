@@ -152,7 +152,7 @@ int main(int argc, char** argv) {
     // propagate the result of the tests
         return res;
 
-    const int MAX_N = 10'000;
+    const int MAX_N = 5'000;
     
     auto start = std::chrono::high_resolution_clock::now();
 
