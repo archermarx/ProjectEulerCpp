@@ -1,4 +1,6 @@
 #include <cmath>
+#include <vector>
+#include "doctest.h"
 
 template <typename T>
 bool is_pentagonal(const T n) {
@@ -65,7 +67,8 @@ bool is_prime(int n) {
 }
 
 std::vector<bool> prime_sieve(int n) {
-    std::vector<bool> sieve(n+1 / 2, true);
+
+    std::vector<bool> sieve(n+1, true);
 
     // Sieve remaining numbers
     for (int i = 2; i*i <= n; i+=1) {
@@ -79,28 +82,58 @@ std::vector<bool> prime_sieve(int n) {
     return sieve;
 }
 
+std::vector<int> primes(int n) {
+    auto sieve = prime_sieve(n);
+    std::vector<int> _primes{2};
+    for (int i = 3; i <= n; ++ i) {
+        if (sieve[i]) {
+            _primes.push_back(i);
+        }
+    }
+    return _primes;
+}
+
+std::vector<int> prime_factors(int n) {
+    std::vector<int> factors{};
+    return factors;
+}
+
 TEST_CASE("Primes") {
 
     int N = 100;
-    auto primes = prime_sieve(N);
-    CHECK(primes[2]);
-    CHECK(primes[3]);
-    CHECK(!primes[4]);
-    CHECK(primes[5]);
-    CHECK(!primes[6]);
-    CHECK(primes[7]);
-    CHECK(!primes[8]);
-    CHECK(!primes[9]);
-    CHECK(!primes[10]);
-    CHECK(primes[11]);
-    CHECK(!primes[12]);
-    CHECK(primes[13]);
+    auto sieve = prime_sieve(N);
+    auto p = primes(N);
+    CHECK(sieve[2]);
+    CHECK(sieve[3]);
+    CHECK(!sieve[4]);
+    CHECK(sieve[5]);
+    CHECK(!sieve[6]);
+    CHECK(sieve[7]);
+    CHECK(!sieve[8]);
+    CHECK(!sieve[9]);
+    CHECK(!sieve[10]);
+    CHECK(sieve[11]);
+    CHECK(!sieve[12]);
+    CHECK(sieve[13]);
+
+    for (int i = 0; i <= p.size(); i ++) {
+        CHECK(sieve[p[i]]);
+    }
 
     for (int i = 2; i < N; i++) {
-        auto a = primes[i];
+        auto a = sieve[i];
         CHECK(a == is_prime(i));
         if (! (a == is_prime(i))) {
             std::cout << i << std::endl;
         }
     }
 }
+
+// TEST_CASE("Prime factors") {
+//     CHECK(prime_factors(14).size() == 2);
+//     CHECK(prime_factors(15).size() == 2);
+//     CHECK(prime_factors(644).size() == 3);
+//     CHECK(prime_factors(645).size() == 3);
+//     CHECK(prime_factors(646).size() == 3);
+// }
+

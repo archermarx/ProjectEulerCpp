@@ -24,8 +24,9 @@ int main(int argc, char** argv) {
         
     auto start = high_resolution_clock::now();
     
+    auto factorize = prime_factors(646);
+
     // CODE GOES HERE
-    int answer = 0;
 
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<std::chrono::microseconds>(stop - start);
