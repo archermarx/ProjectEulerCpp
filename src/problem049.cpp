@@ -39,7 +39,7 @@ void problem49() {
 
     // find location of first prime number greater than 1000
     int ind = -1;
-    for (int i = 0; i < prime_list.size(); i++) {
+    for (size_t i = 0; i < prime_list.size(); i++) {
         if (prime_list[i] > 1000) {
             ind = i;
             break;
@@ -56,7 +56,7 @@ void problem49() {
     std::cout << "last prime: " << last_prime << "\n";
  
     // iterate over starting primes
-    for (int i = ind; i < prime_list.size(); i++) {
+    for (size_t i = ind; i < prime_list.size(); i++) {
         // todo: would be way faster to just generate all possible permutations, then check for primality of permutations, then
         // check for arithmetic sequences.
         int n1 = prime_list[i];

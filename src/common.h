@@ -1,5 +1,6 @@
 #include <cmath>
 #include <vector>
+#include <iostream>
 #include "doctest.h"
 
 template <typename T>
@@ -181,7 +182,7 @@ TEST_CASE("Primes") {
     CHECK(!sieve[12]);
     CHECK(sieve[13]);
 
-    for (int i = 0; i <= p.size(); i ++) {
+    for (size_t i = 0; i <= p.size(); i ++) {
         CHECK(sieve[p[i]]);
     }
 
