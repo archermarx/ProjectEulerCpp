@@ -17,9 +17,9 @@ using namespace std::chrono;
 // phi(10^10) = 10^10 * (1 - 1/2) * (1 - 1/5) = 1/2 * 4/5 * 10^10 = 2/5 * 10^10 = 0.4e10 = 4e9
 //
 
-size_t binary_log(const size_t n) {
-    size_t m = n;
-    size_t i = 0;
+uint64_t binary_log(const uint64_t n) {
+    uint64_t m = n;
+    uint64_t i = 0;
     while (m > 1) {
         m /= 2;
         i ++;
@@ -27,79 +27,76 @@ size_t binary_log(const size_t n) {
     return i;
 }
 
-// return nth binary digit of n
-inline size_t binary_digit(const size_t n, const size_t m) {
-    return (n >> (m - 1)) & 1; 
-}
-
-std::vector<size_t> powers_of_two(const size_t n) {
-    std::vector<size_t> powers{};
-
-    size_t i = 1;
-    while (i <= n) {
-        if (i & n) {
-            powers.push_back(i);
-        }
-        i <<= 1;
+// find a * b % n
+uint64_t mul_mod_n(uint64_t a, uint64_t b, uint64_t n) {
+    uint64_t res = 0;
+    a %= n;
+    while (b) {
+        if (b & 1)
+            res = (res + a) % n;
+        b >>= 1;
+        a = (a << 1) % n;
     }
-    return powers;
+
+    return res;
 }
 
-// Find n^n mod m by repeated squaring
-size_t last_digits(const size_t n, const size_t m) {
+// Find a^b mod n by repeated squaring
+uint64_t pow_mod_n(uint64_t a, uint64_t b, uint64_t n) {
 
-    // n^n = n^(a0 + a1*2 + a2*2^2 + a3*2^3 + ...)
+    // a^b = a^(c0 + c1*2 + c2*2^2 + c3*2^3 + ...), ci = 0 or 1
+    // a^b = prod_{c_i != 0} a^2^i
+    uint64_t acc = 1;
+    uint64_t exponent = a;
 
-    // largest power of 2 less than n is 2^p
-    size_t p = binary_log(n);
-
-    // working value of n (so as not to modify input value)
-    size_t n0 = n;
-    
-    size_t i = 0;
-    size_t acc = 1;
-    size_t exponent = n;
-
-    while (i <= p) {
+    while (b > 0) {
     
         // check if the i-th digit of n is 1
-        if (n0 & 1) {
+        if (b & 1) {
             // if so, then multiply the present exponent with our accumulator (mod 10^m)
-            acc *= exponent;
-            acc %= m;
+            acc = mul_mod_n(acc, exponent, n);
         }
 
         // square the exponent
-        exponent *= exponent;
-        acc %= m; 
+        exponent = mul_mod_n(exponent, exponent, n);
 
         // Shift n0 one bit to the right
-        n0 >>= 1;
-        i++;
+        b >>= 1;
     }
 
     return acc;
 }
 
 TEST_CASE("powers of two") {
-    CHECK(powers_of_two(2) == std::vector<size_t>{2});
-    CHECK(powers_of_two(3) == std::vector<size_t>{1, 2});
+    const uint64_t ten_ten = 10'000'000'000;
     CHECK(binary_log(1) == 0);
     CHECK(binary_log(2) == 1);
     CHECK(binary_log(10) == 3);
-    CHECK(((5 >> 2) & 1) == 1);
-    CHECK(binary_digit(5, 1) == 1);
-    CHECK(binary_digit(5, 2) == 0);
-    CHECK(binary_digit(5, 3) == 1);
-    CHECK(binary_digit(4, 3) == 1);
-    CHECK(binary_digit(8, 4) == 1);
-    CHECK(last_digits(2, 100) == 4);
-    CHECK(last_digits(3, 100) == 27);
-    CHECK(last_digits(11, 100) == 11);
-    CHECK(last_digits(11, 10'000'000'000) == 5311670611);
-    CHECK(last_digits(1000, 10'000'000'000) == 0);
-    CHECK(last_digits(100, 10'000'000'000) == 0);
-    CHECK(last_digits(10, 10'000'000'000) == 0);
+    CHECK(pow_mod_n(2, 2, 100) == 4);
+    CHECK(pow_mod_n(2, 3, 100) == 8);
+    CHECK(pow_mod_n(3, 3, 100) == 27);
+    CHECK(pow_mod_n(11, 11, 100) == 11);
+    CHECK(pow_mod_n(1000, 1000, ten_ten) == 0);
+    CHECK(pow_mod_n(1000, 100, ten_ten) == 0);
+    CHECK(pow_mod_n(7, 358, 10) == 9);
+    CHECK(pow_mod_n(17, 17, 10) == 7);
+    CHECK(pow_mod_n(74, 540, 100) == 76);
+    CHECK(pow_mod_n(33, 42, 100) == 89);
+    CHECK(pow_mod_n(31, 25, 100) == 51);
+    CHECK(pow_mod_n(117, 1023, 229) == 141);
+    CHECK(pow_mod_n(9, 9, ten_ten) == 387420489);
+    CHECK(pow_mod_n(10, 10, ten_ten) == 0);
+    CHECK(pow_mod_n(11, 11, ten_ten) == 5311670611);
+    CHECK(pow_mod_n(12, 12, ten_ten) == 6100448256);
+    CHECK(pow_mod_n(13, 13, ten_ten) == 5106592253);
+    CHECK(pow_mod_n(14, 14, ten_ten) == 6825558016);
+    CHECK(pow_mod_n(15, 15, ten_ten) == 380859375);
+    CHECK(pow_mod_n(16, 16, ten_ten) == 3709551616);
+    CHECK(pow_mod_n(19, 19, ten_ten) == 3589123979);
+    CHECK(pow_mod_n(21, 21, ten_ten) == 1381124421);
+    CHECK(pow_mod_n(31, 31, ten_ten) == 6044734431);
+    CHECK(pow_mod_n(51, 51, ten_ten) == 8231315051);
+    CHECK(pow_mod_n(99, 99, ten_ten) == 9200499899);
 }
 
 int main(int argc, char** argv) {
@@ -121,19 +118,18 @@ int main(int argc, char** argv) {
         
     auto start = high_resolution_clock::now();
     
-
     // get our large power of ten
-    size_t m = 10;
-    size_t n = 1000;
-    size_t ten_to_the_m = 1;
-    for (size_t i = 0; i < m; i ++) {
+    uint64_t m = 10;
+    uint64_t n = 1000;
+    uint64_t ten_to_the_m = 1;
+    for (uint64_t i = 0; i < m; i ++) {
         ten_to_the_m *= 10;
     }
 
-    // initialize our answer to 1^1 + 2^2
-    size_t answer = 5;
-    for (size_t i = 3; i <= n; i++) {
-        answer += last_digits(i, ten_to_the_m);
+    // compute the answer
+    uint64_t answer = 0;
+    for (uint64_t i = 1; i <= n; i++) {
+        answer += pow_mod_n(i, i, ten_to_the_m);
     }
 
     std::cout<< "Answer = " << answer % ten_to_the_m << std::endl;
