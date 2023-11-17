@@ -3,6 +3,9 @@
 #include <iostream>
 #include "doctest.h"
 
+using std::vector, std::tuple;
+using std::cout, std::endl;
+
 template <typename T>
 bool is_pentagonal(const T n) {
     return std::fmod(std::sqrt(1 + 24 * n), 6) == 5;
